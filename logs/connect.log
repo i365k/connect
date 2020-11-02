@@ -1726,3 +1726,4 @@
 2019/08/05 18:24:51.954 [I] [main.go:102]  package38773c83e72db457dd7918a9136d6b1d
 2019/08/05 18:24:51.954 [I] [main.go:105]  胡帅 礼包数据为空
 2019/08/05 18:33:01.492 [I] [app.go:215]  http server Running on http://:8887
+2020/11/02 17:27:27.949 [I] [app.go:214]  http server Running on http://:8887

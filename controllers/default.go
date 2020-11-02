@@ -1,23 +1,23 @@
 package controllers
 
 import (
+	"connect/models"
+	"connect/utils"
+	"encoding/hex"
 	"encoding/json"
+	"fmt"
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/cache"
 	_ "github.com/astaxie/beego/cache/redis"
-	_ "github.com/gomodule/redigo/redis"
-	"github.com/gomodule/redigo/redis"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
-	"strconv"
-	"github.com/astaxie/beego"
-	"connect/utils"
-	"connect/models"
+	"github.com/gomodule/redigo/redis"
+	_ "github.com/gomodule/redigo/redis"
 	"github.com/medivhzhan/weapp"
-	"github.com/goEncrypt"
-	"time"
-	"encoding/hex"
-	"fmt"
+	"github.com/wumansgy/goEncrypt"
 	"math/rand"
+	"strconv"
+	"time"
 )
 
 //创建一个结构体继承beego
@@ -45,8 +45,7 @@ func (this *Controller) Ping() {
 	logs.SetLogger(logs.AdapterFile, `{"filename":"./logs/api/ping.log"}`)
 
 	//定义反回数据
-	response := map[string]string{
-	}
+	response := map[string]string{}
 
 	response["errno"] = utils.RECODE_OK
 	response["errmsg"] = utils.RecodeText(response["errno"])
@@ -64,8 +63,7 @@ func (this *Controller) Login() {
 	logs.SetLevel(1)
 
 	//定义反回数据
-	response := map[string]string{
-	}
+	response := map[string]string{}
 
 	//接收请求参数
 	var request = make(map[string]interface{})
@@ -104,9 +102,9 @@ func (this *Controller) Login() {
 		return
 	}
 
-	ssk := res.SessionKey
+	skey := res.SessionKey
 	//调用sha256方法将session_key哈希得到skey
-	skey := goEncrypt.GetStringHash256(ssk)
+	//skey := goEncrypt.GetStringHash256(ssk)
 	//将从微信获取到的opid哈希处理
 	hxopid := utils.GetMd5String(res.OpenID)
 
@@ -260,9 +258,7 @@ func (this *Controller) PullNew() {
 		return
 	}
 	//定义反回数据
-	response := map[string]interface{}{
-
-	}
+	response := map[string]interface{}{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -395,8 +391,7 @@ func (this *Controller) Ranking() {
 		return
 	}
 	//定义反回数据
-	response := map[string]interface{}{
-	}
+	response := map[string]interface{}{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -493,8 +488,7 @@ func (this *Controller) TimeRanking() {
 		return
 	}
 	//定义反回数据
-	response := map[string]interface{}{
-	}
+	response := map[string]interface{}{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -592,8 +586,7 @@ func (this *Controller) NowTime() {
 		return
 	}
 	//定义反回数据
-	response := map[string]string{
-	}
+	response := map[string]string{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); !ok {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -618,7 +611,8 @@ func (this *Controller) NowTime() {
 	nowtime := time.Now().Unix()
 	//准备加密
 	Key := []byte("1234567887654321")
-	ciphernowtime := goEncrypt.AesCBC_Encrypt([]byte(strconv.Itoa(int(nowtime))), Key)
+	//ciphernowtime := goEncrypt.AesCBC_Encrypt([]byte(strconv.Itoa(int(nowtime))), Key)
+	ciphernowtime, _ := goEncrypt.AesCbcEncrypt([]byte(strconv.Itoa(int(nowtime))), []byte(Key))
 	encodenowtime := hex.EncodeToString(ciphernowtime)
 
 	//返回数据
@@ -643,8 +637,7 @@ func (this *Controller) GetCheckpoint() {
 		return
 	}
 	//定义反回数据
-	response := map[string]string{
-	}
+	response := map[string]string{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -761,8 +754,7 @@ func (this *Controller) MaxConfig() {
 		return
 	}
 	//定义反回数据
-	response := map[string]interface{}{
-	}
+	response := map[string]interface{}{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -866,8 +858,7 @@ func (this *Controller) MiniConfig() {
 		return
 	}
 	//定义反回数据
-	response := map[string]interface{}{
-	}
+	response := map[string]interface{}{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -976,8 +967,7 @@ func (this *Controller) Package() {
 		return
 	}
 	//定义反回数据
-	response := map[string]string{
-	}
+	response := map[string]string{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -1143,8 +1133,7 @@ func (this *Controller) MaxNumber() {
 		return
 	}
 	//定义反回数据
-	response := map[string]string{
-	}
+	response := map[string]string{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -1261,8 +1250,7 @@ func (this *Controller) Start() {
 		return
 	}
 	//定义反回数据
-	response := map[string]string{
-	}
+	response := map[string]string{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -1371,8 +1359,7 @@ func (this *Controller) Pass() {
 		return
 	}
 	//定义反回数据
-	response := map[string]interface{}{
-	}
+	response := map[string]interface{}{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -1567,8 +1554,7 @@ func (this *Controller) Diamond() {
 		return
 	}
 	//定义反回数据
-	response := map[string]string{
-	}
+	response := map[string]string{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -1708,8 +1694,7 @@ func (this *Controller) Random() {
 		return
 	}
 	//定义反回数据
-	response := map[string]interface{}{
-	}
+	response := map[string]interface{}{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -1778,11 +1763,11 @@ func (this *Controller) Random() {
 	var tets []models.Random
 	for _, v := range temp {
 		var tet models.Random
-		tet.Number =utils.Encrypt(v.Number)
-		tet.MaxNumber =utils.Encrypt(v.MaxNumber)
-		tet.Good =utils.Encrypt(v.Good)
+		tet.Number = utils.Encrypt(v.Number)
+		tet.MaxNumber = utils.Encrypt(v.MaxNumber)
+		tet.Good = utils.Encrypt(v.Good)
 		tet.Perfect = utils.Encrypt(v.Perfect)
-		tets =append(tets,tet)
+		tets = append(tets, tet)
 	}
 
 	//返回数据
@@ -1807,8 +1792,7 @@ func (this *Controller) Remind() {
 		return
 	}
 	//定义反回数据
-	response := map[string]string{
-	}
+	response := map[string]string{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
@@ -1892,8 +1876,7 @@ func (this *Controller) Sign() {
 		return
 	}
 	//定义反回数据
-	response := map[string]interface{}{
-	}
+	response := map[string]interface{}{}
 	//判断请求参数
 	if _, ok := request["skey"].(string); ok != true {
 		response["errno"] = utils.RECODE_PARAMERR
